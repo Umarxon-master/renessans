@@ -1,422 +1,288 @@
-import React, { useMemo, useState } from "react";
-import "./App.css";
+import React from 'react';
+import './App.css';
 
-const data = [
-  {
-    title: "Profile",
-    current:
-      "Maktab haqida kerakli ma’lumotlar mavjud.",
-    problem:
-      "Hozircha yo‘q, lekin mavjud profilni ko‘rgan yangi ota-onani tezda qiziqtirish va ishontirish yanada kuchaytirilishi mumkin.",
-    solution: "Hozircha yaxshi.",
-  },
-  {
-    title: "Kontent",
-    current:
-      "Maktab, o‘quvchilar, natijalar va darslar haqida muntazam kontent bor.",
-    problem: "Yo‘q.",
-    solution:
-      "Kontentni Trust + Proof + Objection + Conversion bo‘yicha taqsimlash.",
-  },
-  {
-    title: "Reels",
-    current:
-      "“Nega Renessans?”, maktab afzalliklari, o‘quvchilar natijalari bor.",
-    problem: "Ba’zi mavzular takroriy ko‘rinishi mumkin.",
-    solution:
-      "Faqat maktabni maqtash emas, ota-onaning real savol va muammolariga javob berish.",
-  },
-  {
-    title: "Proof",
-    current:
-      "IELTS, SAT, sertifikatlar, boshqa natijalar ko‘rsatiladi.",
-    problem:
-      "Kuchli natijalar bor, lekin ularni hikoyaga aylantirish imkoniyati mavjud.",
-    solution:
-      "Natijani o‘quvchining yo‘li bilan birga ko‘rsatish.",
-  },
-  {
-    title: "Student Content",
-    current:
-      "O‘quvchilar haqida Reelslar chiqarilmoqda.",
-    problem:
-      "Har bir o‘quvchining hikoyasi chuqurroq ochilishi mumkin.",
-    solution:
-      "O‘quvchining maqsadi, qiyinchiligi, Renessansdagi jarayoni va natijasini ko‘rsatish.",
-  },
-  {
-    title: "Parent Testimonial",
-    current:
-      "Ota-onalar maktab haqida fikr bildirmoqda.",
-    problem:
-      "Fikrlar yanada konkretlashtirilishi mumkin.",
-    solution:
-      "“Nima yoqdi?”dan ko‘ra real muammo → o‘zgarish → natija savollaridan foydalanish.",
-  },
-  {
-    title: "Objection Handling",
-    current:
-      "Q&A orqali savollarga javob beriladi.",
-    problem:
-      "Eng ko‘p uchraydigan shubhalar alohida kontent sifatida ko‘paytirilishi mumkin.",
-    solution:
-      "Ota-onalarning shubhalarini oldindan topib, Reels orqali javob berish.",
-  },
-  {
-    title: "Highlights",
-    current:
-      "Sertifikatlar, IELTS, SAT, to‘lovnoma, darslar, manzil, ustozlar, Telegram, Q&A, biz haqimizda va aloqa mavjud.",
-    problem:
-      "Hozircha yo‘q, lekin ularni kuchaytirish mumkin.",
-    solution:
-      "Highlight nomlari va ichidagi ma’lumotlarni ota-onaning qaror yo‘liga mos tizimlash.",
-  },
-  {
-    title: "Teacher Proof",
-    current:
-      "Ustozlarning maktabga kirish uchun natijalari ko‘rsatiladi.",
-    problem: "Yo‘q.",
-    solution:
-      "Ustozning tajribasi va o‘quvchiga qanday yordam berishini ko‘rsatish.",
-  },
-  {
-    title: "Experience",
-    current:
-      "Dars jarayonlari ko‘rsatiladi.",
-    problem: "Yo‘q.",
-    solution: "",
-  },
-  {
-    title: "USP",
-    current:
-      "Maktabning afzalliklari kontentda aytiladi.",
-    problem: "Hozircha yo‘q.",
-    solution: "",
-  },
-  {
-    title: "CTA",
-    current:
-      "Aloqa markazi va murojaat qilish imkoniyati mavjud.",
-    problem:
-      "CTA yaxshi, lekin oxiriga CTA screen'ga biroz ko‘proq ma’lumot sig‘dirsa bo‘ladi.",
-    solution:
-      "Reelsning oxiridagi screen'ga faqat murojaat uchun nomer emas, balki manzil va oyiga nech pul to‘lash kerakligini qo‘yish mumkin. O‘shanda murojaatda klient tarafdan savollar kamayadi.",
-  },
-  {
-    title: "Conversion",
-    current:
-      "Profil kerakli ma’lumotlarni beradi.",
-    problem: "Yo‘q.",
-    solution: "",
-  },
-  {
-    title: "Engagement",
-    current:
-      "Engagement aralash: ba’zi kontent yaxshi, ba’zilari past.",
-    problem:
-      "Bu asosiy muammo emas.",
-    solution:
-      "Engagementni asosiy KPI emas, yordamchi ko‘rsatkich sifatida ko‘rish.",
-  },
-];
-
-const ideas = [
-  {
-    number: "01",
-    title: "Reel №1",
-    text:
-      "Odamlar maktabga kirib kelishadi, iloji bo‘lsa tanaffus paytida va o‘quvchilardan maktab ta’limi haqida ma’lumot so‘rashadi va bilib olib javobni minus yoki plyusga tiqishadi. Plyus minus iloji bo‘lsa ekranning tepa qismida turib tursin, sanab turilishi uchun! Va oxiri natijalarni aytib (iloji bo‘lsa minus o‘quvchilar bo‘lmasin) maktabni maqtashadi va CTA, keyin tamom.",
-  },
-  {
-    number: "02",
-    title: "Reel №2",
-    text:
-      "Bir ona yoki ota birinchi bo‘lib bolasi qaysi maktabga borganini va u yerda yaxshi natijalar olmaganini aytadi va u yerdan keyin qanchalik yaxshi maktab qidirib qiynalishganini aytishadi. Keyin esa Renessansga o‘tib hammasi o‘zgarganini, bolasi har tomonlama + kirganini aytib beradi. Oxirida hammasi qiyinchilik bilan boshlanib IELTS 7+ yoki SAT score 1300+ tugaganlarini aytib beradilar. Bu Reelsning maqsadi oldingidek faqat ota-onalar maktabni maqtash emas, balki nega maqtayotgani, qanday hammasi bolaga ta’sir etganini tushuntirishadi. Oddiy so‘zda bolaning muvaffaqiyati tarixini aytib berishadi va bu Reel o‘zining tarixi deb oldingilaridan ajralib turadi.",
-  },
-];
-
-const App = () => {
-  const [activeSection, setActiveSection] = useState("all");
-  const [search, setSearch] = useState("");
-  const [dark, setDark] = useState(false);
-  const [openRows, setOpenRows] = useState(
-    data.map((_, index) => index)
-  );
-
-  const toggleRow = (index) => {
-    setOpenRows((prev) =>
-      prev.includes(index)
-        ? prev.filter((item) => item !== index)
-        : [...prev, index]
-    );
-  };
-
-  const expandAll = () => {
-    setOpenRows(data.map((_, index) => index));
-  };
-
-  const closeAll = () => {
-    setOpenRows([]);
-  };
-
-  const filteredData = useMemo(() => {
-    const value = search.toLowerCase().trim();
-
-    if (!value) return data;
-
-    return data.filter((item) =>
-      [
-        item.title,
-        item.current,
-        item.problem,
-        item.solution,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(value)
-    );
-  }, [search]);
-
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
+const SMMReport = () => {
   return (
-    <div className={dark ? "app dark" : "app"}>
-      <div className="page-shell">
+    <div className="report-container">
+      {/* Sarlavha qismi */}
+      <header className="report-header">
+        <div className="badge">SMM HISOBOTI</div>
+        <h1>SMM FAOLIYATI BO‘YICHA HISOBOT</h1>
+        <p className="report-period">
+          <strong>Hisobot davri:</strong> 10-oktabr – 10-noyabr, 2026
+        </p>
+      </header>
 
-        {/* TOP BAR */}
-        <header className="topbar">
-          <div className="brand" onClick={() => scrollTo("top")}>
-            <div className="brand-mark">R</div>
-            <div>
-              <h2>Renessans</h2>
-              <span>SMM Analysis</span>
-            </div>
+      {/* 1. Loyiha haqida */}
+      <section className="report-card">
+        <h2>1. LOYIHA HAQIDA</h2>
+        <div className="info-grid">
+          <div className="info-item">
+            <span className="label">Brend:</span>
+            <span className="value highlight">LA KUBA</span>
           </div>
-
-          <div className="top-actions">
-            <button
-              className="theme-btn"
-              onClick={() => setDark(!dark)}
-              title="Tema almashtirish"
+          <div className="info-item">
+            <span className="label">Asosiy platforma:</span>
+            <span className="value">Instagram</span>
+          </div>
+          <div className="info-item full-width">
+            <span className="label">Faoliyat yo‘nalishi:</span>
+            <span className="value">Turli ta’mlardagi Mojito va boshqa salqin ichimliklarni sotish.</span>
+          </div>
+          <div className="info-item full-width">
+            <span className="label">Instagram sahifasi:</span>
+            <a 
+              href="https://www.instagram.com/lakuba_uzbekistan/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="social-link"
             >
-              {dark ? "☀️" : "🌙"}
-            </button>
+              @lakuba_uzbekistan ↗
+            </a>
           </div>
-        </header>
+        </div>
 
-        {/* HERO */}
-        <section className="hero" id="top">
-          <div className="hero-content">
-            <div className="hero-badge">RENESSANS SCHOOL</div>
+        <div className="sub-block">
+          <h3>Hisobot maqsadi:</h3>
+          <ul className="styled-list">
+            <li>Bir oy davomida amalga oshirilgan SMM faoliyatini ko‘rsatish.</li>
+            <li>Nashr qilingan kontentlarni tahlil qilish.</li>
+            <li>Instagram sahifasining statistik natijalarini baholash.</li>
+            <li>Kuchli va yaxshilanishi kerak bo‘lgan tomonlarni aniqlash.</li>
+            <li>Keyingi oy uchun SMM rivojlantirish yo‘nalishlarini belgilash.</li>
+          </ul>
+        </div>
+      </section>
 
-            <h1>Renessans</h1>
+      {/* 2. Bajarilgan ishlar */}
+      <section className="report-card">
+        <h2>2. HISOBOT DAVOMIDA BAJARILGAN ISHLAR</h2>
+        <p className="section-desc">
+          10-oktabrdan 10-noyabrgacha Instagram sahifasida jami <strong>14 ta kontent</strong> joylashtirilgan.
+        </p>
 
-            <p>
-              Hozirgi holat, muammolar, solution va yangi idealar.
-            </p>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Kontent turi</th>
+              <th>Soni</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Reels</td>
+              <td>3 ta</td>
+            </tr>
+            <tr>
+              <td>Post</td>
+              <td>8 ta</td>
+            </tr>
+            <tr>
+              <td>Stories</td>
+              <td>3 ta</td>
+            </tr>
+            <tr className="total-row">
+              <td><strong>Jami</strong></td>
+              <td><strong>14 ta</strong></td>
+            </tr>
+          </tbody>
+        </table>
 
-            <div className="hero-buttons">
-              <button onClick={() => scrollTo("analysis")}>
-                Analizni ko‘rish ↓
-              </button>
-
-              <button
-                className="secondary-btn"
-                onClick={() => scrollTo("ideas")}
-              >
-                Yangi idealar →
-              </button>
+        <div className="content-breakdown">
+          <h3>Reels kontentlari</h3>
+          <div className="reels-grid">
+            <div className="reel-box">
+              <h4>1. LA KUBA Shatoot</h4>
+              <p>Mahsulotni estetik muhitda ko‘rsatish orqali uning vizual jozibadorligini oshirishga qaratilgan video.</p>
+            </div>
+            <div className="reel-box">
+              <h4>2. LA KUBA ta’mlari</h4>
+              <p>Bir nechta ichimlik ta’mlarini namoyish qilish va mahsulot tanlovini ko‘rsatishga qaratilgan video.</p>
+            </div>
+            <div className="reel-box">
+              <h4>3. «Bugun qaysi LA KUBA'ni ichaman?»</h4>
+              <p>Tomoshabinni turli ta’mlar orasidan tanlov qilishga undaydigan, interaktiv yondashuvdagi video.</p>
             </div>
           </div>
 
-          <div className="hero-card">
-            <div className="hero-card-title">Asosiy fokus</div>
-            <strong>Ota-onani ishontirish</strong>
-            <span>→ ko‘proq klientlar</span>
+          <h3>Post kontentlari</h3>
+          <p className="sub-text">8 ta post orqali mahsulotlar turli vizual uslublarda namoyish etilgan. Asosiy kreativ yo‘nalishlar:</p>
+          <ul className="styled-list">
+            <li>LA KUBA mahsulotini kreativ personaj yordamida tanishtirish.</li>
+            <li>Blueberry va Strawberry ta’mlarini o‘zaro taqqoslash.</li>
+            <li>LA KUBA Energy ichimligini sport va energiya mavzusi bilan bog‘lash.</li>
+            <li>Mojito ichimligini suv, muz va limon bilan estetik ko‘rsatish.</li>
+            <li>Mahsulotni quyoshli kun va yozgi kayfiyat bilan bog‘lash.</li>
+            <li>LA KUBA Anorli ta’mini alohida taqdim etish.</li>
+            <li>Mojito Blueberry mahsulotini tungi va salqin atmosfera orqali ko‘rsatish.</li>
+          </ul>
+
+          <h3>Stories</h3>
+          <p className="sub-text">Hisobot davrida <strong>3 ta Stories</strong> joylashtirilgan.</p>
+        </div>
+      </section>
+
+      {/* 3. Umumiy statistika */}
+      <section className="report-card">
+        <h2>3. INSTAGRAM SAHIFASINING UMUMIY STATISTIKASI</h2>
+        <p className="section-desc">Hisobot davri uchun Instagram Insights ma’lumotlari:</p>
+
+        <div className="stats-grid">
+          <div className="stat-box">
+            <span className="stat-number">10 548</span>
+            <span className="stat-title">Jami ko‘rishlar (Views)</span>
           </div>
-        </section>
-
-        {/* NAVIGATION */}
-        <nav className="section-nav">
-          <button
-            className={activeSection === "all" ? "active" : ""}
-            onClick={() => {
-              setActiveSection("all");
-              scrollTo("analysis");
-            }}
-          >
-            Hozirgi holat
-          </button>
-
-          <button
-            className={activeSection === "solutions" ? "active" : ""}
-            onClick={() => {
-              setActiveSection("solutions");
-              scrollTo("solutions");
-            }}
-          >
-            Solutions
-          </button>
-
-          <button
-            className={activeSection === "ideas" ? "active" : ""}
-            onClick={() => {
-              setActiveSection("ideas");
-              scrollTo("ideas");
-            }}
-          >
-            Yangi idealar
-          </button>
-        </nav>
-
-        {/* SEARCH */}
-        <section className="control-panel">
-          <div className="search-box">
-            <span>⌕</span>
-            <input
-              type="text"
-              placeholder="Analizdan qidirish..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          <div className="stat-box">
+            <span className="stat-number">4 251</span>
+            <span className="stat-title">Tomoshabinlar (Viewers)</span>
           </div>
-
-          <div className="control-buttons">
-            <button onClick={expandAll}>Hammasini ochish</button>
-            <button onClick={closeAll}>Hammasini yopish</button>
+          <div className="stat-box">
+            <span className="stat-number">311</span>
+            <span className="stat-title">O‘zaro aloqalar (Interactions)</span>
           </div>
-        </section>
+          <div className="stat-box">
+            <span className="stat-number">210</span>
+            <span className="stat-title">Faol akkauntlar (Engaged)</span>
+          </div>
+          <div className="stat-box">
+            <span className="stat-number">236</span>
+            <span className="stat-title">Profil harakatlari</span>
+          </div>
+          <div className="stat-box">
+            <span className="stat-number">232</span>
+            <span className="stat-title">Profil tashriflari</span>
+          </div>
+        </div>
 
-        {/* ANALYSIS */}
-        <main id="analysis">
-
-          <section className="section-heading">
-            <span className="small-label">01</span>
-            <div>
-              <h2>Hozirgi holat</h2>
-              <p>Profil va kontent bo‘yicha tahlil.</p>
+        <div className="audience-split">
+          <h3>Ko‘rishlar auditoriyasi</h3>
+          <div className="progress-bar-container">
+            <div className="progress-bar">
+              <div className="progress-followers" style={{ width: '45%' }}>Obunachilar: 45%</div>
+              <div className="progress-nonfollowers" style={{ width: '55%' }}>Obuna bo‘lmaganlar: 55%</div>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          <div className="analysis-list">
-            {filteredData.map((item, index) => {
-              const isOpen = openRows.includes(index);
-
-              return (
-                <article className="analysis-card" key={item.title}>
-                  <button
-                    className="analysis-header"
-                    onClick={() => toggleRow(index)}
-                  >
-                    <div className="header-left">
-                      <span className="number">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-
-                      <h3>{item.title}</h3>
-                    </div>
-
-                    <span className={isOpen ? "arrow rotate" : "arrow"}>
-                      ↓
-                    </span>
-                  </button>
-
-                  {isOpen && (
-                    <div className="analysis-body">
-                      <div className="info-box current">
-                        <span>HOZIRGI HOLAT</span>
-                        <p>{item.current}</p>
-                      </div>
-
-                      <div className="info-box problem">
-                        <span>MUAMMO</span>
-                        <p>{item.problem}</p>
-                      </div>
-
-                      {item.solution && (
-                        <div className="info-box solution">
-                          <span>SOLUTION</span>
-                          <p>{item.solution}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </article>
-              );
-            })}
+      {/* 4. Kontent turlari bo'yicha natijalar */}
+      <section className="report-card">
+        <h2>4. KONTENT TURLARI BO‘YICHA NATIJALAR</h2>
+        
+        <div className="tables-row">
+          <div className="table-col">
+            <h3>Ko‘rishlar bo‘yicha taqsimot</h3>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Kontent turi</th>
+                  <th>Ko‘rishlar ulushi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Reels</td>
+                  <td className="highlight-cell">68,9%</td>
+                </tr>
+                <tr>
+                  <td>Postlar</td>
+                  <td>27,1%</td>
+                </tr>
+                <tr>
+                  <td>Stories</td>
+                  <td>4,1%</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          {/* SOLUTIONS */}
-          <section id="solutions" className="solutions-section">
-            <section className="section-heading">
-              <span className="small-label">02</span>
-              <div>
-                <h2>Solutions</h2>
-                <p>Muammolar uchun yozilgan yechimlar.</p>
-              </div>
-            </section>
-
-            <div className="solution-grid">
-              {data
-                .filter((item) => item.solution)
-                .map((item, index) => (
-                  <div className="solution-card" key={item.title}>
-                    <div className="solution-number">
-                      {String(index + 1).padStart(2, "0")}
-                    </div>
-
-                    <h3>{item.title}</h3>
-                    <p>{item.solution}</p>
-                  </div>
-                ))}
-            </div>
-          </section>
-
-          {/* IDEAS */}
-          <section id="ideas" className="ideas-section">
-            <section className="section-heading">
-              <span className="small-label">03</span>
-              <div>
-                <h2>Yangi idealar</h2>
-                <p>Kelajak uchun Reel g‘oyalari.</p>
-              </div>
-            </section>
-
-            <div className="ideas-list">
-              {ideas.map((idea) => (
-                <article className="idea-card" key={idea.number}>
-                  <div className="idea-number">{idea.number}</div>
-
-                  <div className="idea-content">
-                    <h3>{idea.title}</h3>
-                    <p>{idea.text}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        </main>
-
-        {/* FOOTER */}
-        <footer>
-          <div>
-            <strong>Renessans</strong>
-            <span>SMM Analysis</span>
+          <div className="table-col">
+            <h3>O‘zaro aloqalar bo‘yicha taqsimot</h3>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Kontent turi</th>
+                  <th>Interactions ulushi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Reels</td>
+                  <td className="highlight-cell">82,9%</td>
+                </tr>
+                <tr>
+                  <td>Postlar</td>
+                  <td>13,9%</td>
+                </tr>
+                <tr>
+                  <td>Stories</td>
+                  <td>3,2%</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+        </div>
 
-          <button onClick={() => scrollTo("top")}>
-            ↑ Tepaga
-          </button>
-        </footer>
+        <div className="audience-split">
+          <h3>O‘zaro aloqalar auditoriyasi</h3>
+          <div className="progress-bar-container">
+            <div className="progress-bar">
+              <div className="progress-followers" style={{ width: '20.6%' }}>20,6%</div>
+              <div className="progress-nonfollowers" style={{ width: '79.4%' }}>Obuna bo‘lmaganlar: 79,4%</div>
+            </div>
+          </div>
+          <p className="legend-note">* Obunachilar: 20,6% | Obuna bo‘lmaganlar: 79,4%</p>
+        </div>
+      </section>
 
-      </div>
+      {/* 5. Profil faolligi tahlili */}
+      <section className="report-card">
+        <h2>5. PROFIL FAOLLIGI TAHLILI</h2>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Ko‘rsatkich</th>
+              <th>Natija</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Profil tashriflari</td>
+              <td>232</td>
+            </tr>
+            <tr>
+              <td>Tashqi havolaga bosishlar</td>
+              <td>4</td>
+            </tr>
+            <tr className="total-row">
+              <td><strong>Jami profil harakatlari</strong></td>
+              <td><strong>236</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      {/* Yakuniy xulosa */}
+      <section className="report-card conclusion-card">
+        <h2>YAKUNIY XULOSA</h2>
+        <p>
+          10-oktabrdan 10-noyabrgacha LA KUBA Instagram sahifasida 3 ta Reels, 8 ta post va 3 ta Stories — jami 14 ta kontent joylashtirilgan.
+        </p>
+        <p>
+          Hisobot davrida sahifa <strong>10 548 ta ko‘rish</strong> va <strong>311 ta o‘zaro aloqaga</strong> erishgan. Reels kontentlari ko‘rishlar va o‘zaro aloqalar bo‘yicha eng katta ulushni egallagan.
+        </p>
+        <p>
+          Keyingi davrda asosiy e’tibor Reels samaradorligini davom ettirish, Stories faolligini oshirish, yangi auditoriyani obunachiga aylantirish va profilga tashriflarni foydali harakatlarga aylantirishga qaratilishi lozim.
+        </p>
+      </section>
+
+      {/* Footer */}
+      <footer className="report-footer">
+        <p><strong>Hisobot yakuni.</strong></p>
+        <p>Manba: LA KUBA Instagram Insights va hisobot davrida joylashtirilgan kontentlar. Hisobot faqat taqdim etilgan ma’lumotlarga asoslangan.</p>
+      </footer>
     </div>
   );
 };
 
-export default App;
+export default SMMReport;
